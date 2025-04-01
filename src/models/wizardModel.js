@@ -22,9 +22,8 @@ const getWizardById = async (id) => {
 
 const createWizard = async (name, house_id) => {
     const result = await pool.query(
-        `INSERT INTO wizards (name, house_id)
-         VALUES ($1, $2) RETURNING *`,
-        [name, house_id] 
+        "INSERT INTO wizards (name, house_id) VALUES ($1, $2) RETURNING *",
+        [name, house_id]
     );
     return result.rows[0];
 };

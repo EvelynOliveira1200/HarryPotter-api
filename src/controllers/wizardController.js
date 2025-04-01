@@ -47,12 +47,12 @@ const updateWizard = async (req, res) => {
 const deleteWizard = async (req, res) => {
     try {
             const wizardId= req.params.id;
-            await houseModel.deleteHouse(wizardId);
+            await wizardModel.deleteWizard(wizardId);
         } catch (error) {
             res.status(500).json({ message: "Erro ao deletar." });
         }
         res.status(200).json({ message: "Deletado com sucesso." });
-    }
+}
     
 
 module.exports = { getAllWizards, getWizard, createWizard, updateWizard, deleteWizard };
