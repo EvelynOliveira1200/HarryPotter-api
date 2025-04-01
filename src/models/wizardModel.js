@@ -21,6 +21,9 @@ const getWizardById = async (id) => {
 };
 
 const createWizard = async (name, house_id) => {
+    if (!house_id) {
+        throw new Error("house_id não pode ser null ou undefined.");
+    }
     const result = await pool.query(
         "INSERT INTO wizards (name, house_id) VALUES ($1, $2) RETURNING *",
         [name, house_id]

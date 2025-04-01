@@ -24,6 +24,11 @@ const getWizard = async (req, res) => {
 const createWizard = async (req, res) => {
     try {
         const { name, house_id } = req.body;
+
+        if (!house_id) {
+            return res.status(400).json({ message: "O campo house_id é obrigatório." });
+        }
+
         const newWizard = await wizardModel.createWizard(name, house_id);
         res.status(201).json(newWizard);
     } catch (error) {
