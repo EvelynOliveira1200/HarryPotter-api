@@ -25,12 +25,8 @@ const getWizard = async (req, res) => {
 const createWizard = async (req, res) => {
     try {
         const { name, house_id } = req.body;
-
-        if (!house_id) {
-            return res.status(400).json({ message: "O campo house_id é obrigatório." });
-        }
-
-        const newWizard = await wizardModel.createWizard(name, house_id);
+        const photo = req.file ? req.file.filename : null;
+        const newWizard = await wizardModel.createWizard(name, house_id, photo);
         res.status(201).json(newWizard);
     } catch (error) {
         res.status(500).json({ message: "Erro ao criar bruxo." });
