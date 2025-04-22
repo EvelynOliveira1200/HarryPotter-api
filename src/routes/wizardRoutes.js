@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const wizardController = require("../controllers/wizardController");
-const upload = require("../config/upload.js"); // importe a upload.js
+const wizardController = require("../controllers/wizardController.js");
+const upload = require("./../config/upload.js");
+const apiKeyMiddleware = require("../config/apiKey");
 
+router.use(apiKeyMiddleware);
 /**
  * @swagger
  * tags:
- *  name: Wizards
- *  description: Gerenciamento de bruxos
+ *   name: Wizards
+ *   description: Gerenciamento de bruxos
  */
 
 /**
@@ -26,8 +28,27 @@ const upload = require("../config/upload.js"); // importe a upload.js
  *       200:
  *         description: Lista de bruxos
  */
+router.get("/wizards", wizardController.getAllWizards);
 
-router.get("/", wizardController.getAllWizards);
+/**
+ * @swagger
+ * /api/wizards/{id}:
+ *   get:
+ *     summary: Busca bruxo por ID
+ *     tags: [Wizards]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Bruxo encontrado
+ *       404:
+ *         description: Bruxo não encontrado
+ */
+router.get("/wizards/:id", wizardController.getWizard);
 
 /**
  * @swagger
@@ -38,6 +59,56 @@ router.get("/", wizardController.getAllWizards);
  *     requestBody:
  *       required: true
  *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               house_id:
+ *                 type: integer
+ *               photo:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       201:
+ *         description: Bruxo criado
+ */
+router.post("/wizards", upload.single("photo"), wizardController.createWizard);
+
+/**
+ * @swagger
+ * /api/wizards/{id}:
+ *   delete:
+ *     summary: Deleta um bruxo
+ *     tags: [Wizards]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Bruxo deletado
+ */
+router.delete("/wizards/:id", wizardController.deleteWizard);
+
+/**
+ * @swagger
+ * /api/wizards/{id}:
+ *   put:
+ *     summary: Atualiza um bruxo
+ *     tags: [Wizards]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
  *         application/json:
  *           schema:
  *             type: object
@@ -45,18 +116,11 @@ router.get("/", wizardController.getAllWizards);
  *               name:
  *                 type: string
  *               house_id:
- *                 type: number
- *               photo:
- *                 type: string
+ *                 type: integer
  *     responses:
- *       201:
- *         description: Casa criada com sucesso
+ *       200:
+ *         description: Bruxo atualizado
  */
-
-router.post("/wizards", upload.single("photo"), wizardController.createWizard);
-
-router.get("/:id", wizardController.getWizard);
-router.put("/:id", wizardController.updateWizard);
-router.delete("/:id", wizardController.deleteWizard);
+router.put("/wizards/:id", wizardController.updateWizard);
 
 module.exports = router;
